@@ -60,9 +60,7 @@ function Home(){
   return(
     <div>
       <h1>Home</h1>
-      <input value={state.nombre} onChange={(e)=>setState({...state,nombre:e.target.value})}></input>
-      <p>Nombre: {state.nombre}</p>
-      <p>correo: {state.correo}</p>
+
     </div>
   )
 }
@@ -117,9 +115,9 @@ class Juego extends React.Component{
           'Content-Type':'application/json'
         },
         body:JSON.stringify({
-          nombre:"fdsfsdfds",
-          correo:"ffffffff",
-          dob:"10-06-11"
+          nombre: this.state.nombre,
+          correo: this.state.correo,
+          dob: this.state.dob
         })
       })
     
@@ -133,6 +131,11 @@ class Juego extends React.Component{
     return(
       <div>
         <h1>Usuario</h1>
+        <input value={this.state.nombre} onChange={(e)=>this.setState({...this.state,nombre:e.target.value})}></input>
+        <input value={this.state.correo} onChange={(e)=>this.setState({...this.state,correo:e.target.value})}></input>
+        <input value={this.state.dob} onChange={(e)=>this.setState({...this.state,dob:e.target.value})}></input>
+        <p>Nombre: {this.state.nombre}</p>
+        <p>correo: {this.state.correo}</p>
         <button type="button" onClick={this.comunica.bind(this,"hola")} className="btn btn-primary">Buscar Usuario</button>
         <button type="button" onClick={this.comunica.bind(this,"hola")} className="btn btn-primary">Consume POST</button>
       </div>
