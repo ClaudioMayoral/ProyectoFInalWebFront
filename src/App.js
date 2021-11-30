@@ -28,7 +28,7 @@ function MenuUsuario(){
     <div>
       <nav className="nav">
         <span className="nav-link"><Link to="/usuario/actualizarusuario">Actualizar Usuario</Link></span>     
-        <span className="nav-link"><Link to="/usuario/info">Info del Suaurio</Link></span>
+        <span className="nav-link"><Link to="/usuario/info">Info del Usuario</Link></span>
         <span className="nav-link"><Link to="/usuario/registrar">Registrar Usuario</Link></span>            
       </nav>
       <Outlet/>       
