@@ -153,6 +153,7 @@ class Usuario extends React.Component {
         <button type="button" onClick={this.info.bind(this,this.state.id)} className="btn btn-primary">Buscar Usuario</button>
         <p>Nombre: {this.state.nombre}</p>
         <p>Correo: {this.state.correo}</p>
+        <p>Fecha de nacimiento: {this.state.dob}</p>
         <p>ID's de los Vuelos del cliente</p>
         {listItems}
       </div>
