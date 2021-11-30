@@ -1,4 +1,4 @@
-import React, {useState,useEffect} from 'react';
+import React, {useEffect} from 'react';
 import {Routes,Route,Link,Outlet} from 'react-router-dom';
 
 
@@ -161,9 +161,150 @@ class Usuario extends React.Component {
 
 }
 
+class RegistrarUsuario extends React.Component{
+  constructor(){
+    super()
+    this.state={
+      info:null,
+      id: null,
+      nombre:"",
+      correo:"",
+      dob:""
+    }
+  }
 
 
-class Vuelo extends React.Component{
+  componentDidMount(){
+    
+  }
+
+
+  
+  async comunica(info){
+    //Consumiendo el servicio POST  
+    const respuesta = await fetch('http://localhost:8080/usuario/crear',{
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json'
+        },
+        body:JSON.stringify({
+          nombre: this.state.nombre,
+          correo: this.state.correo,
+          dob: this.state.dob,
+        })
+      })
+    
+      //Imprimir lo que responde el servidor
+      const data = await respuesta.json()
+      if(data){
+        this.setState({...this.state,id:data.id})
+      }
+      
+  }
+
+  render(){
+    return(
+      <div>
+        <h1>Pon los siguientes datos: </h1>
+        <p>Nombre:</p>
+        <input value={this.state.nombre} onChange={(e)=>this.setState({...this.state,nombre:e.target.value})}></input>
+        <p>Correo:</p>
+        <input value={this.state.correo} onChange={(e)=>this.setState({...this.state,correo:e.target.value})}></input>
+        <p>Fecha de Nacimiento:</p>
+        <input value={this.state.dob} onChange={(e)=>this.setState({...this.state,dob:e.target.value})}></input>
+        <p></p>
+        <button type="button" onClick={this.comunica.bind(this,"hola")} className="btn btn-primary">Crear Usuario</button>
+        <p></p>
+        <p>Tu usuario es: {this.state.id}</p>
+      </div>
+    )
+  }
+}
+
+class ActualizarUsuario extends React.Component{
+
+  constructor(){
+    super()
+    this.state={
+      estado:"",
+      id: null,
+      nombre:"",
+      correo:"",
+      dob:""
+    }
+  }
+
+
+  componentDidMount(){
+    
+  }
+
+  async conseguirDatos(info){
+    fetch(`http://localhost:8080/usuario/${info}`)
+      .then(res=>res.json())
+        .then(datos=>{
+          console.log(datos)
+          this.setState({
+            nombre: datos.nombre,
+            correo: datos.correo,
+            dob: datos.dob
+          })
+        })
+        .catch(err=>{
+          console.log("Servidor desconectado")
+          console.log(err)
+        })
+  }
+
+
+  
+  async comunica(info){
+    //Consumiendo el servicio POST  
+    const respuesta = await fetch(`http://localhost:8080/usuario/actualizar/${this.state.id}`,{
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json'
+        },
+        body:JSON.stringify({
+          nombre: this.state.nombre,
+          correo: this.state.correo,
+          dob: this.state.dob,
+        })
+      })
+    
+      //Imprimir lo que responde el servidor
+      const data = await respuesta.json()
+      if(data){
+        this.setState({...this.state,id:data.id})
+        this.setState({...this.state,estado:data.estado.mensaje})
+
+      }
+      
+  }
+
+  render(){
+    return(
+      <div>
+        <h1>Pon los siguientes datos: </h1>
+        <input value={this.state.id} onChange={(e)=>this.setState({...this.state,id:e.target.value})}></input>
+        <button type="button" onClick={this.conseguirDatos.bind(this,this.state.id)} className="btn btn-primary">Buscar Usuario</button>
+        <p>Nombre:</p>
+        <input value={this.state.nombre} onChange={(e)=>this.setState({...this.state,nombre:e.target.value})}></input>
+        <p>Correo:</p>
+        <input value={this.state.correo} onChange={(e)=>this.setState({...this.state,correo:e.target.value})}></input>
+        <p>Fecha de Nacimiento:</p>
+        <input value={this.state.dob} onChange={(e)=>this.setState({...this.state,dob:e.target.value})}></input>
+        <p></p>
+        <button type="button" onClick={this.comunica.bind(this,"hola")} className="btn btn-primary">Actualizar Usuario</button>
+        <p></p>
+        <p>Respuesta: {this.state.estado}</p>
+      </div>
+    )
+  }
+
+}
+
+class CrearVuelo extends React.Component{
 
   constructor(){
     super()
@@ -231,96 +372,17 @@ class Vuelo extends React.Component{
   }
 }
 
-class ActualizarUsuario extends React.Component{
-
-  constructor(){
-    super()
-    this.state={
-      info:null,
-      id: null,
-      nombre:"",
-      correo:"",
-      dob:""
-    }
-  }
-
-
-  componentDidMount(){
-    
-  }
-
-  async conseguirDatos(info){
-    fetch(`http://localhost:8080/usuario/${info}`)
-      .then(res=>res.json())
-        .then(datos=>{
-          console.log(datos)
-          this.setState({
-            nombre: datos.nombre,
-            correo: datos.correo,
-            dob: datos.dob
-          })
-        })
-        .catch(err=>{
-          console.log("Servidor desconectado")
-          console.log(err)
-        })
-  }
-
-
-  
-  async comunica(info){
-    //Consumiendo el servicio POST  
-    const respuesta = await fetch(`http://localhost:8080/usuario/actualizar/${this.state.id}`,{
-        method:'POST',
-        headers:{
-          'Content-Type':'application/json'
-        },
-        body:JSON.stringify({
-          nombre: this.state.nombre,
-          correo: this.state.correo,
-          dob: this.state.dob,
-        })
-      })
-    
-      //Imprimir lo que responde el servidor
-      const data = await respuesta.json()
-      if(data){
-        this.setState({...this.state,id:data.id})
-      }
-      
-  }
-
-  render(){
-    return(
-      <div>
-        <h1>Pon los siguientes datos: </h1>
-        <input value={this.state.id} onChange={(e)=>this.setState({...this.state,id:e.target.value})}></input>
-        <button type="button" onClick={this.conseguirDatos.bind(this,this.state.id)} className="btn btn-primary">Buscar Usuario</button>
-        <p>Nombre:</p>
-        <input value={this.state.nombre} onChange={(e)=>this.setState({...this.state,nombre:e.target.value})}></input>
-        <p>Correo:</p>
-        <input value={this.state.correo} onChange={(e)=>this.setState({...this.state,correo:e.target.value})}></input>
-        <p>Fecha de Nacimiento:</p>
-        <input value={this.state.dob} onChange={(e)=>this.setState({...this.state,dob:e.target.value})}></input>
-        <p></p>
-        <button type="button" onClick={this.comunica.bind(this,"hola")} className="btn btn-primary">Actualizar Usuario</button>
-        <p></p>
-      </div>
-    )
-  }
-
-}
-
 class ActualizarVuelo extends React.Component{
   constructor(){
     super()
     this.state={
       id: null,
-      lugares:null,
+      estado: "",
+      lugares: null,
       paisOrigen:"",
-      paisDestino:"",
-      horaLlegada:"",
-      horaSalida:""
+      paisDestino: "",
+      horaLlegada: "",
+      horaSalida: ""
     }
   }
 
@@ -369,7 +431,7 @@ class ActualizarVuelo extends React.Component{
       const data = await respuesta.json()
       if(data){
         this.setState({...this.state,id:data.id})
-        this.setState({...this.state,lugares:null})
+        this.setState({...this.state,estado:data.estado.mensaje})
       }
       
   }
@@ -393,49 +455,121 @@ class ActualizarVuelo extends React.Component{
         <p></p>
         <button type="button" onClick={this.comunica.bind(this,"hola")} className="btn btn-primary">Actualizar Vuelo</button>
         <p></p>
+        <p>Respuesta: {this.state.estado}</p>
       </div>
     )
   }
   
 }
 
-class Registro extends React.Component{
+class Vuelo extends React.Component{
   constructor(){
     super()
     this.state={
-      info:null,
+      boletos: [],
       id: null,
-      nombre:"",
-      correo:"",
-      dob:""
+      lugares:null,
+      paisOrigen:"",
+      paisDestino:"",
+      horaLlegada:"",
+      horaSalida:""
     }
   }
 
-
   componentDidMount(){
-    
+  }
+
+  info(info){
+    this.conseguirDatos(info)
+    this.conseguirBoletos(info)
+  }
+
+  async conseguirDatos(info){
+    fetch(`http://localhost:8080/vuelo/${info}`)
+      .then(res=>res.json())
+        .then(datos=>{
+          console.log(datos)
+          this.setState({
+            lugares: datos.lugares,
+            paisOrigen: datos.pais_origen,
+            paisDestino: datos.pais_destino,
+            horaLlegada: datos.hora_llegada,
+            horaSalida: datos.hora_salida
+          })
+        })
+        .catch(err=>{
+          console.log("Servidor desconectado")
+          console.log(err)
+        })
   }
 
 
-  
+  async conseguirBoletos(info){
+    fetch(`http://localhost:8080/boleto/vuelo/${info}`)
+      .then(res=>res.json())
+        .then(boletos=>{
+          console.log(boletos)
+          this.setState({
+            boletos: boletos
+          })
+        })
+        .catch(err=>{
+          console.log("Servidor desconectado")
+          console.log(err)
+        })
+  }
+
+
+
+  render(){
+    const listItems = this.state.boletos.map((number) =>
+      <li>{number.id_usuario}</li>
+    );
+    return(
+      <div>
+        <h1>Vista del Vuelo</h1>
+        <input value={this.state.id} onChange={(e)=>this.setState({...this.state,id:e.target.value})}></input>
+        <button type="button" onClick={this.info.bind(this,this.state.id)} className="btn btn-primary">Buscar Vuelo</button>
+        <p>Lugares Disponibles: {this.state.lugares}</p>
+        <p>Pais Destino: {this.state.paisDestino}</p>
+        <p>Pais Origen: {this.state.paisOrigen}</p>
+        <p>Hora Salida: {this.state.horaSalida}</p>
+        <p>Hora Llegada: {this.state.horaLlegada}</p>
+
+        <p>ID's de los clientes en el vuelo</p>
+        {listItems}
+      </div>
+    )
+  }
+}
+
+class CrearBoleto extends React.Component{
+  constructor(){
+    super()
+    this.state={
+      id_usuario: null,
+      id_vuelo: null,
+      estado: ""
+    }
+  }
+
   async comunica(info){
     //Consumiendo el servicio POST  
-    const respuesta = await fetch('http://localhost:8080/usuario/crear',{
+    const respuesta = await fetch('http://localhost:8080/boleto/crear',{
         method:'POST',
         headers:{
           'Content-Type':'application/json'
         },
         body:JSON.stringify({
-          nombre: this.state.nombre,
-          correo: this.state.correo,
-          dob: this.state.dob,
+          idVuelo: this.state.id_vuelo,
+          idUsuario: this.state.id_usuario,
         })
       })
     
       //Imprimir lo que responde el servidor
       const data = await respuesta.json()
       if(data){
-        this.setState({...this.state,id:data.id})
+        this.setState({...this.state,estado:data.estado.mensaje})
       }
       
   }
@@ -444,21 +578,66 @@ class Registro extends React.Component{
     return(
       <div>
         <h1>Pon los siguientes datos: </h1>
-        <p>Nombre:</p>
-        <input value={this.state.nombre} onChange={(e)=>this.setState({...this.state,nombre:e.target.value})}></input>
-        <p>Correo:</p>
-        <input value={this.state.correo} onChange={(e)=>this.setState({...this.state,correo:e.target.value})}></input>
-        <p>Fecha de Nacimiento:</p>
-        <input value={this.state.dob} onChange={(e)=>this.setState({...this.state,dob:e.target.value})}></input>
+        <p>Id Usuario:</p>
+        <input value={this.state.nombre} onChange={(e)=>this.setState({...this.state,id_usuario:e.target.value})}></input>
+        <p>Id Vuelo:</p>
+        <input value={this.state.correo} onChange={(e)=>this.setState({...this.state,id_vuelo:e.target.value})}></input>
         <p></p>
-        <button type="button" onClick={this.comunica.bind(this,"hola")} className="btn btn-primary">Crear Usuario</button>
+        <button type="button" onClick={this.comunica.bind(this,"hola")} className="btn btn-primary">Crear Boleto</button>
         <p></p>
-        <p>Tu usuario es: {this.state.id}</p>
+        <p>Respuesta: {this.state.estado}</p>
       </div>
     )
   }
 }
 
+class EliminarBoleto extends React.Component{
+  constructor(){
+    super()
+    this.state={
+      id_usuario: null,
+      id_vuelo: null,
+      estado: ""
+    }
+  }
+
+  async comunica(info){
+    //Consumiendo el servicio POST  
+    const respuesta = await fetch('http://localhost:8080/boleto/eliminar',{
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json'
+        },
+        body:JSON.stringify({
+          idVuelo: this.state.id_vuelo,
+          idUsuario: this.state.id_usuario,
+        })
+      })
+    
+      //Imprimir lo que responde el servidor
+      const data = await respuesta.json()
+      if(data){
+        this.setState({...this.state,estado:data.estado.mensaje})
+      }
+      
+  }
+
+  render(){
+    return(
+      <div>
+        <h1>Pon los siguientes datos: </h1>
+        <p>Id Usuario:</p>
+        <input value={this.state.nombre} onChange={(e)=>this.setState({...this.state,id_usuario:e.target.value})}></input>
+        <p>Id Vuelo:</p>
+        <input value={this.state.correo} onChange={(e)=>this.setState({...this.state,id_vuelo:e.target.value})}></input>
+        <p></p>
+        <button type="button" onClick={this.comunica.bind(this,"hola")} className="btn btn-primary">Eliminar Boleto</button>
+        <p></p>
+        <p>Respuesta: {this.state.estado}</p>
+      </div>
+    )
+  }
+}
 
 
 
@@ -476,18 +655,18 @@ function App() {
               <Route index element={<Home/>}/>
               <Route path="actualizarusuario" element={<ActualizarUsuario/>}/>
               <Route path="info" element={<Usuario/>}/>
-              <Route path="registrar" element={<Registro/>}/>
+              <Route path="registrar" element={<RegistrarUsuario/>}/>
             </Route>
             <Route path="/vuelo" element={<MenuVuelo/>}>
               <Route index element={<Home/>}/>
-              <Route path="info" element={<ActualizarUsuario/>}/>
-              <Route path="crearvuelo" element={<Vuelo/>}/>
+              <Route path="info" element={<Vuelo/>}/>
+              <Route path="crearvuelo" element={<CrearVuelo/>}/>
               <Route path="actualizarvuelo" element={<ActualizarVuelo/>}/>
             </Route>
             <Route path="/boletos" element={<MenuBoleto/>}>
               <Route index element={<Home/>}/>
-              <Route path="crearboleto" element={<Vuelo/>}/>
-              <Route path="eliminarboleto" element={<ActualizarVuelo/>}/>
+              <Route path="crearboleto" element={<CrearBoleto/>}/>
+              <Route path="eliminarboleto" element={<EliminarBoleto/>}/>
             </Route>
 
             <Route path="*" element={<Error404/>}/>
